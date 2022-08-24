@@ -1,6 +1,6 @@
 ## 💻 Projeto
 
-Consulta graphql para 100 repositórios (com todos os dados/métricas necessários para responder as RQs) + requisição automática
+Consulta graphql para 100 repositórios (com todos os dados/métricas necessários para responder as RQs) + requisição automática.
 
 
 ## 🚀 Como executar
