@@ -1,57 +1,107 @@
 import { stringify } from "csv";
 import fs from "fs/promises";
 import api from "./services/api";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
+import { DadosNodes } from "./types/github";
 
-dotenv.config()
+dotenv.config();
 
 const token = process.env.TOKEN;
 
-console.log(token)
-
-const queryGraphQL = `
-  query{
-    search(query: "stars:>1000", type: REPOSITORY, first: 100) {
-      nodes {
-        ... on Repository {
-          nameWithOwner
-          createdAt
-          updatedAt
-          releases {
-            totalCount
-          }
-          primaryLanguage {
-            name
-          }
-          pullRequests(states: [MERGED]) {
-            totalCount
-          }
+export const consultaGraphQLGithub = async () => {
+  let dados = [];
+  let queryGraphQL = `
+query{
+  search(query: "stars:>1000", type: REPOSITORY, first: 20) {
+    pageInfo {
+      startCursor
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      ... on Repository {
+        nameWithOwner
+        createdAt
+        updatedAt
+        releases {
+          totalCount
+        }
+        primaryLanguage {
+          name
+        }
+        pullRequests(states: [MERGED]) {
+          totalCount
+        }
+        closedIssues: issues(filterBy: {states: CLOSED}) {
+          totalCount
         }
       }
     }
   }
+}
 `;
-
-export const consultaGraphQLGithub = () => {
-  api
-    .post("graphql", JSON.stringify({ query: queryGraphQL }), {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then(
-      (response) =>
-        stringify(
-          response.data.data.search.nodes,
-          {
-            header: true,
-            columns: ["nameWithOwner","createdAt","updatedAt","releases.totalCount","primaryLanguage.name","pullRequests.totalCount"],
-          },
-          function (err, output) {
-            fs.writeFile(__dirname + "/csv/data.csv", output, "utf-8");
-          }
-        )
+  for (let i = 0; i < 50; i++) {
+    let response = await api.post(
+      "graphql",
+      JSON.stringify({ query: queryGraphQL }),
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
+    let endCursor = response.data.data.search.pageInfo.endCursor;
+    console.log(endCursor);
+    queryGraphQL = `
+        query{
+          search(query: "stars:>1000", type: REPOSITORY, first: 20, after: "${endCursor}") {
+            pageInfo {
+              startCursor
+              hasNextPage
+              endCursor
+            }
+            nodes {
+              ... on Repository {
+                nameWithOwner
+                createdAt
+                updatedAt
+                releases {
+                  totalCount
+                }
+                primaryLanguage {
+                  name
+                }
+                pullRequests(states: [MERGED]) {
+                  totalCount
+                }
+                closedIssues: issues(filterBy: {states: CLOSED}) {
+                  totalCount
+                }
+              }
+            }
+          }
+        }
+      `;
+    dados = dados.concat(response.data.data.search.nodes);
+    stringify(
+      dados,
+      {
+        header: true,
+        columns: [
+          "nameWithOwner",
+          "createdAt",
+          "updatedAt",
+          "releases.totalCount",
+          "primaryLanguage.name",
+          "pullRequests.totalCount",
+          "closedIssues.totalCount"
+        ],
+      },
+      function (err, output) {
+        fs.writeFile(__dirname + "/csv/data.csv", output, "utf-8");
+      }
+    );
+  }
 };
 
 consultaGraphQLGithub();

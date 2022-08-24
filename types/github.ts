@@ -1,4 +1,15 @@
-export type DadosGithub = {
+export type DadosSearch = {
+  pageInfo: DadosPageInfo;
+  nodes: DadosNodes[];
+};
+
+export type DadosPageInfo = {
+  startCursor: string;
+  hasNextPage: boolean;
+  endCursor: string;
+};
+
+export type DadosNodes = {
   nameWithOwner: string;
   createdAt: string;
   updatedAt: string;
