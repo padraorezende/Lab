@@ -12,7 +12,7 @@ export const consultaGraphQLGithub = async () => {
   let dados = [];
   let queryGraphQL = `
 query{
-  search(query: "stars:>1000", type: REPOSITORY, first: 20) {
+  search(query: "stars:>1000", type: REPOSITORY, first: 10) {
     pageInfo {
       startCursor
       hasNextPage
@@ -40,7 +40,7 @@ query{
   }
 }
 `;
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 100; i++) {
     let response = await api.post(
       "graphql",
       JSON.stringify({ query: queryGraphQL }),
@@ -54,7 +54,7 @@ query{
     console.log(endCursor);
     queryGraphQL = `
         query{
-          search(query: "stars:>1000", type: REPOSITORY, first: 20, after: "${endCursor}") {
+          search(query: "stars:>1000", type: REPOSITORY, first: 10, after: "${endCursor}") {
             pageInfo {
               startCursor
               hasNextPage
@@ -74,6 +74,7 @@ query{
                 pullRequests(states: [MERGED]) {
                   totalCount
                 }
+                totalIssues: issues { totalCount }
                 closedIssues: issues(filterBy: {states: CLOSED}) {
                   totalCount
                 }
@@ -94,6 +95,7 @@ query{
           "releases.totalCount",
           "primaryLanguage.name",
           "pullRequests.totalCount",
+          "totalIssues.totalCount",
           "closedIssues.totalCount"
         ],
       },
