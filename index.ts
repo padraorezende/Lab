@@ -32,6 +32,7 @@ query{
         pullRequests(states: [MERGED]) {
           totalCount
         }
+        totalIssues: issues { totalCount }
         closedIssues: issues(filterBy: {states: CLOSED}) {
           totalCount
         }
