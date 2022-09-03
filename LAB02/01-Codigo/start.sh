@@ -21,7 +21,7 @@ echo "NAME_REPO,URL_REPO,DATE_REPO,STARS_REPO,RELEASES_REPO,CBO_TOTAL,DIT_TOTAL,
 
 #Preparando Leitura do .csv de entrada
 OLDIFS="$IFS"
-IFS='|'
+IFS=','
 
 COUNT_LINE=0
 
