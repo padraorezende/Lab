@@ -16,6 +16,9 @@ if [ -z $PATH_RUNNER ]; then
   PATH_RUNNER="./data/Runner.jar"
 fi
 
+#Criando arquivo final
+echo "NAME_REPO,URL_REPO,DATE_REPO,STARS_REPO,RELEASES_REPO,CBO_TOTAL,DIT_TOTAL,LCOM_TOTAL,LOC_TOTAL,CLASS_QUANT" > final.csv
+
 #Preparando Leitura do .csv de entrada
 OLDIFS="$IFS"
 IFS='|'
@@ -40,10 +43,10 @@ while read NAME_REPO URL_REPO DATE_REPO STARS_REPO RELEASES_REPO; do
     cd ..
 
     #Apagando metricas geradas
-    # cd data/ck_metrics
-    # rm *.csv
-    # cd ..
-    # cd ..
+    cd data/ck_metrics
+    rm *.csv
+    cd ..
+    cd ..
   fi
   ((COUNT_LINE=COUNT_LINE+1))
 done < $CSV_PATH

@@ -11,7 +11,7 @@ STARS_REPO="$4"
 RELEASES_REPO="$5"
 
 
-#Leitura do arquivo class.csv
+#Leitura das colunas corretas do arquivo class.csv
 awk -F "\"*,\"*" '{print $4}' ./data/ck_metrics/class.csv > ./data/ck_metrics/cbo.csv
 awk -F "\"*,\"*" '{print $9}' ./data/ck_metrics/class.csv > ./data/ck_metrics/dit.csv
 awk -F "\"*,\"*" '{print $12}' ./data/ck_metrics/class.csv > ./data/ck_metrics/lcom.csv
@@ -59,11 +59,9 @@ while read LOC; do
     ((COUNT_LINE=COUNT_LINE+1))
 done < "./data/ck_metrics/loc.csv"
 
-((COUNT_LINE=COUNT_LINE-1))
+CLASS_QUANT=0
+((CLASS_QUANT=COUNT_LINE-1))
 
-echo "CBO_TOTAL=$CBO_TOTAL"
-echo "DIT_TOTAL=$DIT_TOTAL"
-echo "LCOM_TOTAL=$LCOM_TOTAL"
-echo "LOC_TOTAL=$LOC_TOTAL"
-echo "COUNT_LINE=$COUNT_LINE"
-
+#Call end.sh
+#Escrita do .csv final
+./end.sh ${NAME_REPO} ${URL_REPO} ${DATE_REPO} ${STARS_REPO} ${RELEASES_REPO} ${CBO_TOTAL} ${DIT_TOTAL} ${LCOM_TOTAL} ${LOC_TOTAL} ${CLASS_QUANT}
