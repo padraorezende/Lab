@@ -48,9 +48,9 @@ done < "./data/ck_metrics/dit.csv"
 echo -e "\033[1;34m Calculando LCOM\033[0m"
 COUNT_LINE=0
 while read LCOM; do
-    # if [ $COUNT_LINE -ne 0 ]; then
-    #     ((LCOM_TOTAL=LCOM_TOTAL+${LCOM}))
-    # fi
+    if [ $COUNT_LINE -ne 0 ]; then
+        ((LCOM_TOTAL=LCOM_TOTAL+${LCOM}))
+    fi
     ((COUNT_LINE=COUNT_LINE+1))
 done < "./data/ck_metrics/lcom.csv"
 
