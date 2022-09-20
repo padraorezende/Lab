@@ -11,9 +11,8 @@ export type DadosPageInfo = {
 
 export type DadosNodes = {
   nameWithOwner: string;
-  createdAt: string;
-  updatedAt: string;
+  sshUrl: string
+  stargazers: { totalCount: number };
   releases: { totalCount: number };
-  primaryLanguage: { name: string };
-  pullRequests: { totalCount: number };
+  createdAt: string;
 };
