@@ -27,6 +27,7 @@ COUNT_LINE=0
 
 while read NAME_REPO URL_REPO STARS_REPO RELEASES_REPO DATE_REPO; do
   if [ $COUNT_LINE -ne 0 ]; then
+    echo -e "\033[1;32m===========REPOSITORIO $COUNT_LINE===========\033[0m"
     #Clonando repositorio
     # git clone -b master --depth 1 $URL_REPO ./clone_repository/repo
     echo -e "\033[1;31m Clonando Repositorio\033[0m"
