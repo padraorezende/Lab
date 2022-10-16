@@ -111,12 +111,20 @@ export const consultaPullRequests = async () => {
 
     hasNextPage =
       response.data.data?.repository?.pullRequests.pageInfo.hasNextPage;
+
     console.log(hasNextPage);
 
-    if (hasNextPage == false) counter++;
+    if (hasNextPage == false) {
+      inicio = true;
+      counter++;
+    }else{
+      inicio = false
+    }
     endCursor = response.data.data?.repository?.pullRequests.pageInfo.endCursor;
     console.log(endCursor);
-    queryGraphQL = `
+
+    if (inicio == false) {
+      queryGraphQL = `
           query{
               repository(owner: "${ownerName[0]}", name: "${ownerName[1]}") {
                 pullRequests(states: [CLOSED, MERGED], first: 100, after: "${endCursor}") {
@@ -142,7 +150,7 @@ export const consultaPullRequests = async () => {
             }
             }
         `;
-    inicio = false;
+    }
 
     dados = dados.concat(
       response?.data?.data?.repository?.pullRequests.nodes.filter(
@@ -178,6 +186,7 @@ export const consultaPullRequests = async () => {
         );
       }
     );
+    hasNextPage = true;
   }
 };
 
