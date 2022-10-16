@@ -21,7 +21,7 @@ export type DadosNodesRepository = {
   reviews: {
     totalCount: number;
   };
-  body: string;
+  body: any;
   participants: {
     totalCount: number;
   };

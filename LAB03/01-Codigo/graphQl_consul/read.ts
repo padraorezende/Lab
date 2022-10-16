@@ -6,6 +6,7 @@ import { DadosNodesSearch } from "./types/githubSearch";
 import dotenv from "dotenv";
 import api from "./services/api";
 import moment from "moment";
+import { DadosNodesRepository } from "./types/githubRepository";
 
 dotenv.config();
 
@@ -117,8 +118,8 @@ export const consultaPullRequests = async () => {
     if (hasNextPage == false) {
       inicio = true;
       counter++;
-    }else{
-      inicio = false
+    } else {
+      inicio = false;
     }
     endCursor = response.data.data?.repository?.pullRequests.pageInfo.endCursor;
     console.log(endCursor);
@@ -156,11 +157,14 @@ export const consultaPullRequests = async () => {
       response?.data?.data?.repository?.pullRequests.nodes.filter(
         (x) =>
           x.reviews?.totalCount > 0 && verificarHorario(x.createdAt, x.closedAt)
-      )
+      ),
     );
 
+    let x = dados as DadosNodesRepository[]
+    x .forEach((x) => x.body = x.body?.length)
+
     stringify(
-      dados,
+      x,
       {
         header: true,
         columns: [
