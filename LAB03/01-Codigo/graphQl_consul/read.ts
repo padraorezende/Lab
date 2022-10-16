@@ -12,7 +12,7 @@ dotenv.config();
 const token = process.env.TOKEN;
 
 const readCsvQuery = () => {
-  const csvFilePath = path.resolve(__dirname, "./csv/data.csv");
+  const csvFilePath = path.resolve(__dirname, "./csv/data/data2.csv");
 
   const fileContent = readFileSync(csvFilePath, { encoding: "utf-8" });
 
@@ -67,9 +67,9 @@ export const consultaPullRequests = async () => {
   let inicio = true;
   let queryGraphQL = "";
 
-  while (hasNextPage) {
+  while (counter != 50) {
     let ownerName = lista?.[counter].nameWithOwner.split("/");
-
+    console.log(ownerName);
     inicio
       ? (queryGraphQL = `
         query{
@@ -112,6 +112,8 @@ export const consultaPullRequests = async () => {
     hasNextPage =
       response.data.data?.repository?.pullRequests.pageInfo.hasNextPage;
     console.log(hasNextPage);
+
+    if (hasNextPage == false) counter++;
     endCursor = response.data.data?.repository?.pullRequests.pageInfo.endCursor;
     console.log(endCursor);
     queryGraphQL = `
@@ -143,7 +145,7 @@ export const consultaPullRequests = async () => {
     inicio = false;
 
     dados = dados.concat(
-      response.data.data.repository.pullRequests.nodes.filter(
+      response?.data?.data?.repository?.pullRequests.nodes.filter(
         (x) =>
           x.reviews?.totalCount > 0 && verificarHorario(x.createdAt, x.closedAt)
       )
@@ -169,11 +171,13 @@ export const consultaPullRequests = async () => {
         ],
       },
       function (err, output) {
-        fs.writeFile(__dirname + "/csv/pullRequest/pullRequest1.csv", output, "utf-8");
+        fs.writeFile(
+          __dirname + "/csv/pullRequest/pullRequest2.csv",
+          output,
+          "utf-8"
+        );
       }
     );
-
-    counter++;
   }
 };
 
