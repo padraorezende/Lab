@@ -184,7 +184,7 @@ export const consultaPullRequests = async () => {
       },
       function (err, output) {
         fs.writeFile(
-          __dirname + "/csv/pullRequest/pullRequest2.csv",
+          __dirname + "/csv/pullRequest/pullRequest3.csv",
           output,
           "utf-8"
         );
